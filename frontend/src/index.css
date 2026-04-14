@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #eefbf3;
+  --color-brand-100: #d5f5df;
+  --color-brand-200: #b0e9c3;
+  --color-brand-300: #7fd79d;
+  --color-brand-400: #48bc70;
+  --color-brand-500: #249d53;
+  --color-brand-600: #187f43;
+  --color-brand-700: #146537;
+  --color-brand-800: #14502f;
+  --color-brand-900: #114127;
+  --color-ink-950: #07120c;
+  --color-ink-900: #0c1b13;
+  --color-ink-800: #183126;
+  --color-sand: #f8fbf8;
+  --shadow-panel: 0 20px 45px rgba(10, 30, 18, 0.1);
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  color: #0c1b13;
+  background:
+    radial-gradient(circle at top left, rgba(126, 215, 157, 0.24), transparent 30%),
+    linear-gradient(180deg, #f4fbf5 0%, #f8fbf8 55%, #eef6ef 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.bg-auth-grid {
+  background-image:
+    linear-gradient(rgba(22, 60, 38, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(22, 60, 38, 0.06) 1px, transparent 1px);
+}
+
+.panel {
+  @apply rounded-3xl border border-white/70 bg-white/85 shadow-panel backdrop-blur;
+}
+
+.field {
+  @apply w-full rounded-2xl border border-brand-100 bg-white px-4 py-3 text-sm text-ink-900 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-2xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center rounded-2xl border border-brand-200 bg-white px-5 py-3 text-sm font-semibold text-brand-800 transition hover:border-brand-300 hover:bg-brand-50 disabled:cursor-not-allowed disabled:opacity-60;
+}

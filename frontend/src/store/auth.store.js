@@ -1,0 +1,232 @@
+import { create } from "zustand";
+import { api, ensureCsrfToken } from "../lib/api";
+
+const getErrorMessage = (error, fallback) => {
+  return error.response?.data?.message || fallback;
+};
+
+export const useAuthStore = create((set, get) => ({
+  user: null,
+  sessions: [],
+  accessToken: null,
+  csrfReady: false,
+  isAuthenticated: false,
+  isBootstrapping: true,
+  isLoading: false,
+  error: null,
+
+  setError: (error) => set({ error }),
+  clearError: () => set({ error: null }),
+
+  hydrateAuth: async () => {
+    set({ isBootstrapping: true, error: null });
+
+    try {
+      await ensureCsrfToken();
+      const response = await api.get("/auth/me");
+
+      set({
+        csrfReady: true,
+        user: response.data.data,
+        isAuthenticated: true,
+      });
+    } catch {
+      set({
+        csrfReady: true,
+        user: null,
+        isAuthenticated: false,
+        accessToken: null,
+      });
+    } finally {
+      set({ isBootstrapping: false });
+    }
+  },
+
+  register: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/register", payload);
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Registration failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  verifyOtp: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/verify-otp", payload);
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "OTP verification failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  loginWithPassword: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/login", payload);
+      const me = await api.get("/auth/me");
+
+      set({
+        accessToken: response.data.accessToken,
+        user: me.data.data,
+        isAuthenticated: true,
+      });
+
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Login failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  requestLoginOtp: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/login-otp", payload);
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to send OTP");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  verifyLoginOtp: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/verify-login", payload);
+      const me = await api.get("/auth/me");
+
+      set({
+        accessToken: response.data.accessToken,
+        user: me.data.data,
+        isAuthenticated: true,
+      });
+
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Login verification failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  forgotPassword: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/forgot-password", payload);
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to start password reset");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  resetPassword: async (payload) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/reset-password", payload);
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Password reset failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  fetchSessions: async () => {
+    try {
+      const response = await api.get("/auth/sessions");
+      set({ sessions: response.data.sessions || [] });
+      return response.data.sessions || [];
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to load sessions");
+      set({ error: message });
+      throw error;
+    }
+  },
+
+  logout: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.post("/auth/logout");
+      set({
+        user: null,
+        sessions: [],
+        accessToken: null,
+        isAuthenticated: false,
+      });
+    } catch (error) {
+      const message = getErrorMessage(error, "Logout failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  logoutAllDevices: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.post("/auth/logout-all");
+      set({
+        user: null,
+        sessions: [],
+        accessToken: null,
+        isAuthenticated: false,
+      });
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to logout all devices");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  logoutSession: async (sessionId) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await api.post("/auth/logout-session", { sessionId });
+      await get().fetchSessions();
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to remove session");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+}));
