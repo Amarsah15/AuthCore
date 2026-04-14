@@ -5,8 +5,12 @@ export function DashboardPage() {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
-  const verifyCurrentUserOtp = useAuthStore((state) => state.verifyCurrentUserOtp);
-  const resendVerificationOtp = useAuthStore((state) => state.resendVerificationOtp);
+  const verifyCurrentUserOtp = useAuthStore(
+    (state) => state.verifyCurrentUserOtp,
+  );
+  const resendVerificationOtp = useAuthStore(
+    (state) => state.resendVerificationOtp,
+  );
   const clearError = useAuthStore((state) => state.clearError);
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
@@ -30,35 +34,49 @@ export function DashboardPage() {
   return (
     <section className="panel overflow-hidden p-0">
       <div className="border-b border-brand-100 bg-[radial-gradient(circle_at_top_left,rgba(127,215,157,0.22),transparent_34%),linear-gradient(135deg,#f8fbf8_0%,#eefbf3_100%)] px-6 py-7 sm:px-8">
-        <p className="text-sm uppercase tracking-[0.22em] text-brand-700">Overview</p>
+        <p className="text-sm uppercase tracking-[0.22em] text-brand-700">
+          Overview
+        </p>
         <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
-            <h2 className="text-3xl font-semibold text-ink-950 sm:text-4xl">Your account, polished and under control</h2>
+            <h2 className="text-3xl font-semibold text-ink-950 sm:text-4xl">
+              Your account, polished and under control
+            </h2>
             <p className="mt-3 text-sm leading-7 text-ink-800 sm:text-base">
-              Review identity details, confirm your email status, and keep your access flow ready for production use.
+              Review identity details, confirm your email status, and keep your
+              access flow ready for production use.
             </p>
           </div>
           <div className="rounded-3xl border border-white/80 bg-white/80 px-5 py-4 shadow-[0_18px_40px_rgba(20,80,47,0.08)] backdrop-blur">
-            <p className="text-xs uppercase tracking-[0.22em] text-brand-700">Account Role</p>
-            <p className="mt-2 text-xl font-semibold text-ink-950">{user?.role || "user"}</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-brand-700">
+              Account Role
+            </p>
+            <p className="mt-2 text-xl font-semibold text-ink-950">
+              {user?.role || "user"}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="grid gap-5 p-6 sm:p-8 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="min-w-0 rounded-[2rem] border border-brand-100 bg-white p-6 shadow-[0_18px_40px_rgba(20,80,47,0.06)]">
-          <p className="text-xs uppercase tracking-[0.22em] text-brand-700">Email</p>
-          <p className="mt-4 overflow-hidden text-2xl font-semibold leading-tight text-ink-950 break-words">
+        <div className="min-w-0 rounded-4xl border border-brand-100 bg-white p-6 shadow-[0_18px_40px_rgba(20,80,47,0.06)]">
+          <p className="text-xs uppercase tracking-[0.22em] text-brand-700">
+            Email
+          </p>
+          <p className="mt-4 overflow-hidden text-2xl font-semibold leading-tight text-ink-950 wrap-break-word">
             {user?.email || "Unavailable"}
           </p>
           <p className="mt-4 text-sm leading-6 text-ink-800">
-            This address is used for OTP verification, login recovery, and device-aware authentication alerts.
+            This address is used for OTP verification, login recovery, and
+            device-aware authentication alerts.
           </p>
         </div>
 
-        <div className="rounded-[2rem] border border-brand-100 bg-brand-50 p-6">
+        <div className="rounded-4xl border border-brand-100 bg-brand-50 p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs uppercase tracking-[0.22em] text-brand-700">Verification</p>
+            <p className="text-xs uppercase tracking-[0.22em] text-brand-700">
+              Verification
+            </p>
             <span
               className={`rounded-full px-3 py-1 text-xs font-semibold ${
                 user?.isVerified
@@ -72,21 +90,30 @@ export function DashboardPage() {
 
           {user?.isVerified ? (
             <p className="mt-4 text-sm leading-6 text-ink-800">
-              Your account is verified and ready for secure access across sessions and devices.
+              Your account is verified and ready for secure access across
+              sessions and devices.
             </p>
           ) : (
             <div className="mt-4 space-y-4">
               <p className="text-sm leading-6 text-ink-800">
-                Send a fresh OTP and confirm it here to complete verification without leaving the dashboard.
+                Send a fresh OTP and confirm it here to complete verification
+                without leaving the dashboard.
               </p>
 
-              <button className="btn-secondary w-full" type="button" onClick={handleSendVerification} disabled={isLoading}>
+              <button
+                className="btn-secondary w-full"
+                type="button"
+                onClick={handleSendVerification}
+                disabled={isLoading}
+              >
                 {isLoading ? "Sending code..." : "Send verification code"}
               </button>
 
               <form className="space-y-3" onSubmit={handleVerify}>
                 <label className="block">
-                  <span className="mb-2 block text-sm font-medium text-ink-900">Verification OTP</span>
+                  <span className="mb-2 block text-sm font-medium text-ink-900">
+                    Verification OTP
+                  </span>
                   <input
                     className="field"
                     name="otp"
@@ -96,12 +123,18 @@ export function DashboardPage() {
                   />
                 </label>
 
-                <button className="btn-primary w-full" type="submit" disabled={isLoading || otp.trim().length === 0}>
+                <button
+                  className="btn-primary w-full"
+                  type="submit"
+                  disabled={isLoading || otp.trim().length === 0}
+                >
                   {isLoading ? "Verifying..." : "Mark as verified"}
                 </button>
               </form>
 
-              {message ? <p className="text-sm text-brand-800">{message}</p> : null}
+              {message ? (
+                <p className="text-sm text-brand-800">{message}</p>
+              ) : null}
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
             </div>
           )}

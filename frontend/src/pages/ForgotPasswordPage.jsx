@@ -28,15 +28,29 @@ export function ForgotPasswordPage() {
       description="Start a password reset by requesting an OTP for your registered email address."
       footer={
         <span>
-          Remembered it? <Link className="font-semibold text-brand-700" to="/login">Back to login</Link>
+          Remembered it?{" "}
+          <Link className="font-semibold text-brand-700" to="/login">
+            Back to login
+          </Link>
         </span>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <FormNotice type="success" message={message} />
         <FormNotice type="error" message={error} />
-        <FieldGroup label="Email address" name="email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="aman@example.com" />
-        <button className="btn-primary w-full" type="submit" disabled={isLoading}>
+        <FieldGroup
+          label="Email address"
+          name="email"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="aman@example.com"
+        />
+        <button
+          className="btn-primary w-full"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? "Sending OTP..." : "Send reset OTP"}
         </button>
       </form>

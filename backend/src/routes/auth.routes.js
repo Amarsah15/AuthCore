@@ -27,7 +27,12 @@ const authRouter = express.Router();
 authRouter.post("/register", authLimiter, registerUser);
 authRouter.post("/verify-otp", authLimiter, verifyOtp);
 authRouter.post("/resend-verification", authLimiter, resendVerificationOtp);
-authRouter.post("/verify-current-user", protect, authLimiter, verifyCurrentUserOtp);
+authRouter.post(
+  "/verify-current-user",
+  protect,
+  authLimiter,
+  verifyCurrentUserOtp,
+);
 
 // login
 authRouter.post("/login", authLimiter, loginWithPassword);

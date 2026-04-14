@@ -9,7 +9,9 @@ export function VerifyRegistrationPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const verifyOtp = useAuthStore((state) => state.verifyOtp);
-  const resendVerificationOtpForEmail = useAuthStore((state) => state.resendVerificationOtpForEmail);
+  const resendVerificationOtpForEmail = useAuthStore(
+    (state) => state.resendVerificationOtpForEmail,
+  );
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
 
@@ -45,19 +47,44 @@ export function VerifyRegistrationPage() {
       description="Enter the OTP from your inbox to activate your account and continue straight into your dashboard."
       footer={
         <span>
-          Need a different email? <Link className="font-semibold text-brand-700" to="/register">Go back</Link>
+          Need a different email?{" "}
+          <Link className="font-semibold text-brand-700" to="/register">
+            Go back
+          </Link>
         </span>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <FormNotice type="success" message={message} />
         <FormNotice type="error" message={error} />
-        <FieldGroup label="Email address" name="email" type="email" value={form.email} onChange={handleChange} placeholder="aman@example.com" />
-        <FieldGroup label="OTP code" name="otp" value={form.otp} onChange={handleChange} placeholder="Enter 6-digit OTP" />
-        <button className="btn-primary w-full" type="submit" disabled={isLoading}>
+        <FieldGroup
+          label="Email address"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="aman@example.com"
+        />
+        <FieldGroup
+          label="OTP code"
+          name="otp"
+          value={form.otp}
+          onChange={handleChange}
+          placeholder="Enter 6-digit OTP"
+        />
+        <button
+          className="btn-primary w-full"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? "Verifying..." : "Verify account"}
         </button>
-        <button className="btn-secondary w-full" type="button" disabled={isLoading || !form.email} onClick={handleResend}>
+        <button
+          className="btn-secondary w-full"
+          type="button"
+          disabled={isLoading || !form.email}
+          onClick={handleResend}
+        >
           {isLoading ? "Sending..." : "Resend OTP"}
         </button>
       </form>

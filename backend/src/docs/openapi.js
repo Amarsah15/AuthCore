@@ -12,11 +12,7 @@ export const openApiDocument = {
       description: "Local development",
     },
   ],
-  tags: [
-    { name: "System" },
-    { name: "Auth" },
-    { name: "Sessions" },
-  ],
+  tags: [{ name: "System" }, { name: "Auth" }, { name: "Sessions" }],
   components: {
     securitySchemes: {
       cookieAuth: {
@@ -38,8 +34,16 @@ export const openApiDocument = {
         required: ["name", "email", "password"],
         properties: {
           name: { type: "string", example: "Aman Kumar" },
-          email: { type: "string", format: "email", example: "aman@example.com" },
-          password: { type: "string", format: "password", example: "StrongPass123" },
+          email: {
+            type: "string",
+            format: "email",
+            example: "aman@example.com",
+          },
+          password: {
+            type: "string",
+            format: "password",
+            example: "StrongPass123",
+          },
         },
       },
       VerifyOtpRequest: {
@@ -71,7 +75,11 @@ export const openApiDocument = {
         properties: {
           email: { type: "string", format: "email" },
           otp: { type: "string", example: "123456" },
-          newPassword: { type: "string", format: "password", example: "NewStrongPass123" },
+          newPassword: {
+            type: "string",
+            format: "password",
+            example: "NewStrongPass123",
+          },
         },
       },
       Session: {
@@ -110,7 +118,10 @@ export const openApiDocument = {
         type: "object",
         properties: {
           success: { type: "boolean", example: true },
-          message: { type: "string", example: "Operation completed successfully" },
+          message: {
+            type: "string",
+            example: "Operation completed successfully",
+          },
         },
       },
       LoginResponse: {
@@ -475,7 +486,10 @@ export const openApiDocument = {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin access granted" },
+                    message: {
+                      type: "string",
+                      example: "Admin access granted",
+                    },
                   },
                 },
               },

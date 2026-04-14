@@ -20,7 +20,10 @@ export function AppRouter() {
         <Route element={<AuthLayout />}>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-registration" element={<VerifyRegistrationPage />} />
+          <Route
+            path="/verify-registration"
+            element={<VerifyRegistrationPage />}
+          />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify-login" element={<VerifyLoginOtpPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />

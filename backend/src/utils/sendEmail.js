@@ -1,7 +1,12 @@
 import "dotenv/config";
 import nodemailer from "nodemailer";
 
-const requiredEmailEnv = ["EMAIL_HOST", "EMAIL_USER", "EMAIL_PASS", "EMAIL_FROM"];
+const requiredEmailEnv = [
+  "EMAIL_HOST",
+  "EMAIL_USER",
+  "EMAIL_PASS",
+  "EMAIL_FROM",
+];
 
 const createTransporter = () => {
   const missing = requiredEmailEnv.filter((key) => !process.env[key]);

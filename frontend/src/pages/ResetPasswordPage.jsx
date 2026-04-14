@@ -40,17 +40,44 @@ export function ResetPasswordPage() {
       description="Use the OTP from your email and set a stronger password for your account."
       footer={
         <span>
-          Need to restart? <Link className="font-semibold text-brand-700" to="/forgot-password">Request a fresh OTP</Link>
+          Need to restart?{" "}
+          <Link className="font-semibold text-brand-700" to="/forgot-password">
+            Request a fresh OTP
+          </Link>
         </span>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <FormNotice type="success" message={message} />
         <FormNotice type="error" message={error} />
-        <FieldGroup label="Email address" name="email" type="email" value={form.email} onChange={handleChange} placeholder="aman@example.com" />
-        <FieldGroup label="OTP code" name="otp" value={form.otp} onChange={handleChange} placeholder="Enter reset OTP" />
-        <FieldGroup label="New password" name="newPassword" type="password" value={form.newPassword} onChange={handleChange} placeholder="Set a new password" />
-        <button className="btn-primary w-full" type="submit" disabled={isLoading}>
+        <FieldGroup
+          label="Email address"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="aman@example.com"
+        />
+        <FieldGroup
+          label="OTP code"
+          name="otp"
+          value={form.otp}
+          onChange={handleChange}
+          placeholder="Enter reset OTP"
+        />
+        <FieldGroup
+          label="New password"
+          name="newPassword"
+          type="password"
+          value={form.newPassword}
+          onChange={handleChange}
+          placeholder="Set a new password"
+        />
+        <button
+          className="btn-primary w-full"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? "Resetting..." : "Reset password"}
         </button>
       </form>

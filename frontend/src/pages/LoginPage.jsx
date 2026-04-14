@@ -57,13 +57,36 @@ export function LoginPage() {
       <form className="space-y-4" onSubmit={handlePasswordLogin}>
         <FormNotice type="success" message={message} />
         <FormNotice type="error" message={error} />
-        <FieldGroup label="Email address" name="email" type="email" value={form.email} onChange={handleChange} placeholder="aman@example.com" />
-        <FieldGroup label="Password" name="password" type="password" value={form.password} onChange={handleChange} placeholder="Enter your password" />
+        <FieldGroup
+          label="Email address"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="aman@example.com"
+        />
+        <FieldGroup
+          label="Password"
+          name="password"
+          type="password"
+          value={form.password}
+          onChange={handleChange}
+          placeholder="Enter your password"
+        />
         <div className="grid gap-3 sm:grid-cols-2">
-          <button className="btn-primary w-full" type="submit" disabled={isLoading}>
+          <button
+            className="btn-primary w-full"
+            type="submit"
+            disabled={isLoading}
+          >
             {isLoading ? "Signing in..." : "Login with password"}
           </button>
-          <button className="btn-secondary w-full" type="button" onClick={handleOtpLogin} disabled={isLoading || !form.email}>
+          <button
+            className="btn-secondary w-full"
+            type="button"
+            onClick={handleOtpLogin}
+            disabled={isLoading || !form.email}
+          >
             Login with OTP
           </button>
         </div>

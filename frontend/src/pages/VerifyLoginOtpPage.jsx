@@ -37,15 +37,35 @@ export function VerifyLoginOtpPage() {
       description="Enter the one-time password sent to your email to continue into AuthCore."
       footer={
         <span>
-          Need to restart? <Link className="font-semibold text-brand-700" to="/login">Return to login</Link>
+          Need to restart?{" "}
+          <Link className="font-semibold text-brand-700" to="/login">
+            Return to login
+          </Link>
         </span>
       }
     >
       <form className="space-y-4" onSubmit={handleSubmit}>
         <FormNotice type="error" message={error} />
-        <FieldGroup label="Email address" name="email" type="email" value={form.email} onChange={handleChange} placeholder="aman@example.com" />
-        <FieldGroup label="OTP code" name="otp" value={form.otp} onChange={handleChange} placeholder="Enter 6-digit OTP" />
-        <button className="btn-primary w-full" type="submit" disabled={isLoading}>
+        <FieldGroup
+          label="Email address"
+          name="email"
+          type="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="aman@example.com"
+        />
+        <FieldGroup
+          label="OTP code"
+          name="otp"
+          value={form.otp}
+          onChange={handleChange}
+          placeholder="Enter 6-digit OTP"
+        />
+        <button
+          className="btn-primary w-full"
+          type="submit"
+          disabled={isLoading}
+        >
           {isLoading ? "Verifying..." : "Verify and continue"}
         </button>
       </form>

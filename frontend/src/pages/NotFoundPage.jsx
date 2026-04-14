@@ -15,7 +15,7 @@ export function NotFoundPage() {
       </div>
 
       <div className="grid gap-5 p-6 sm:p-8 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[2rem] border border-brand-100 bg-white p-6 shadow-[0_18px_40px_rgba(20,80,47,0.06)]">
+        <div className="rounded-4xl border border-brand-100 bg-white p-6 shadow-[0_18px_40px_rgba(20,80,47,0.06)]">
           <p className="text-xs uppercase tracking-[0.22em] text-brand-700">What You Can Do</p>
           <div className="mt-4 space-y-3 text-sm leading-6 text-ink-800">
             <div className="rounded-2xl bg-brand-50 px-4 py-4">Check the URL for a typo.</div>
@@ -24,7 +24,7 @@ export function NotFoundPage() {
           </div>
         </div>
 
-        <div className="rounded-[2rem] border border-brand-100 bg-brand-50 p-6">
+        <div className="rounded-4xl border border-brand-100 bg-brand-50 p-6">
           <p className="text-xs uppercase tracking-[0.22em] text-brand-700">Quick Return</p>
           <p className="mt-4 text-sm leading-6 text-ink-800">
             Choose the best next step for your current session.

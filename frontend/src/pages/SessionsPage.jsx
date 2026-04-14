@@ -35,9 +35,11 @@ const parseUserAgent = (userAgent) => {
   ];
 
   const browser =
-    browserMatchers.find((item) => item.pattern.test(userAgent))?.label || "Unknown browser";
+    browserMatchers.find((item) => item.pattern.test(userAgent))?.label ||
+    "Unknown browser";
   const platform =
-    platformMatchers.find((item) => item.pattern.test(userAgent))?.label || "Unknown device";
+    platformMatchers.find((item) => item.pattern.test(userAgent))?.label ||
+    "Unknown device";
 
   return { browser, platform };
 };
@@ -59,11 +61,19 @@ export function SessionsPage() {
       <section className="panel p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-brand-700">Device Sessions</p>
-            <h2 className="mt-2 text-3xl font-semibold text-ink-950">Track active devices</h2>
+            <p className="text-sm uppercase tracking-[0.22em] text-brand-700">
+              Device Sessions
+            </p>
+            <h2 className="mt-2 text-3xl font-semibold text-ink-950">
+              Track active devices
+            </h2>
           </div>
 
-          <button className="btn-secondary" onClick={logoutAllDevices} disabled={isLoading}>
+          <button
+            className="btn-secondary"
+            onClick={logoutAllDevices}
+            disabled={isLoading}
+          >
             Logout all devices
           </button>
         </div>
@@ -82,11 +92,16 @@ export function SessionsPage() {
               const { browser, platform } = parseUserAgent(session.userAgent);
 
               return (
-                <div key={`${session.createdAt}-${index}`} className="rounded-3xl border border-brand-100 bg-white p-5 sm:p-6">
+                <div
+                  key={`${session.createdAt}-${index}`}
+                  className="rounded-3xl border border-brand-100 bg-white p-5 sm:p-6"
+                >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-3">
-                        <p className="text-lg font-semibold text-ink-950">Session {index + 1}</p>
+                        <p className="text-lg font-semibold text-ink-950">
+                          Session {index + 1}
+                        </p>
                         {session.isCurrent ? (
                           <span className="rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-800">
                             Current device
@@ -112,24 +127,34 @@ export function SessionsPage() {
 
                   <div className="mt-5 grid gap-4 md:grid-cols-3">
                     <div className="min-w-0 rounded-2xl bg-brand-50 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">IP Address</p>
-                      <p className="mt-2 break-all text-sm font-medium text-ink-950">{getReadableIp(session.ip)}</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">
+                        IP Address
+                      </p>
+                      <p className="mt-2 break-all text-sm font-medium text-ink-950">
+                        {getReadableIp(session.ip)}
+                      </p>
                     </div>
 
                     <div className="min-w-0 rounded-2xl bg-brand-50 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">Device</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">
+                        Device
+                      </p>
                       <p className="mt-2 text-sm font-medium text-ink-950">
                         {browser} on {platform}
                       </p>
-                      <p className="mt-2 break-words text-xs leading-5 text-ink-800">
+                      <p className="mt-2 wrap-break-word text-xs leading-5 text-ink-800">
                         {session.userAgent || "Unknown agent"}
                       </p>
                     </div>
 
                     <div className="min-w-0 rounded-2xl bg-brand-50 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">Started</p>
+                      <p className="text-xs uppercase tracking-[0.18em] text-brand-700">
+                        Started
+                      </p>
                       <p className="mt-2 text-sm font-medium text-ink-950">
-                        {session.createdAt ? new Date(session.createdAt).toLocaleString() : "Unknown"}
+                        {session.createdAt
+                          ? new Date(session.createdAt).toLocaleString()
+                          : "Unknown"}
                       </p>
                     </div>
                   </div>
