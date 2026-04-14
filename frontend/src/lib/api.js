@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+// const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const API_BASE_URL = "https://authcore-24j0.onrender.com/api/v1";
 const API_ORIGIN = new URL(API_BASE_URL).origin;
 
 let csrfToken = null;
@@ -48,7 +49,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
 
-    if (status === 401 && !originalRequest?._retry && !originalRequest?.url?.includes("/auth/refresh")) {
+    if (
+      status === 401 &&
+      !originalRequest?._retry &&
+      !originalRequest?.url?.includes("/auth/refresh")
+    ) {
       originalRequest._retry = true;
 
       try {
