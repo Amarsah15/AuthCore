@@ -4,7 +4,7 @@ export const otpTemplate = (otp, title = "AuthCore Verification") => {
     <div style="max-width:500px; margin:auto; background:white; border-radius:10px; overflow:hidden;">
       
       <div style="background:#16a34a; padding:20px; text-align:center;">
-        <h1 style="color:white; margin:0;">AuthCore 🔐</h1>
+        <h1 style="color:white; margin:0;">AuthCore</h1>
       </div>
 
       <div style="padding:20px; text-align:center;">

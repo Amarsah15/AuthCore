@@ -2,6 +2,8 @@ import express from "express";
 import {
   registerUser,
   verifyOtp,
+  resendVerificationOtp,
+  verifyCurrentUserOtp,
   loginWithOtp,
   verifyLoginOtp,
   forgotPassword,
@@ -24,6 +26,8 @@ const authRouter = express.Router();
 // auth
 authRouter.post("/register", authLimiter, registerUser);
 authRouter.post("/verify-otp", authLimiter, verifyOtp);
+authRouter.post("/resend-verification", authLimiter, resendVerificationOtp);
+authRouter.post("/verify-current-user", protect, authLimiter, verifyCurrentUserOtp);
 
 // login
 authRouter.post("/login", authLimiter, loginWithPassword);

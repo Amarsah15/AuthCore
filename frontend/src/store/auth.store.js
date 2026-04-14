@@ -62,6 +62,61 @@ export const useAuthStore = create((set, get) => ({
 
     try {
       const response = await api.post("/auth/verify-otp", payload);
+      set({
+        accessToken: response.data.accessToken || null,
+        user: response.data.data || null,
+        isAuthenticated: true,
+      });
+
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "OTP verification failed");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  resendVerificationOtp: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/resend-verification", {});
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to send verification OTP");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  resendVerificationOtpForEmail: async (email) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/resend-verification", { email });
+      return response.data;
+    } catch (error) {
+      const message = getErrorMessage(error, "Unable to send verification OTP");
+      set({ error: message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  verifyCurrentUserOtp: async (otp) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const response = await api.post("/auth/verify-current-user", { otp });
+      set((state) => ({
+        ...state,
+        user: response.data.data || state.user,
+      }));
       return response.data;
     } catch (error) {
       const message = getErrorMessage(error, "OTP verification failed");
@@ -164,6 +219,8 @@ export const useAuthStore = create((set, get) => ({
   },
 
   fetchSessions: async () => {
+    set({ error: null });
+
     try {
       const response = await api.get("/auth/sessions");
       set({ sessions: response.data.sessions || [] });

@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -10,14 +11,19 @@ const app = express();
 const csrfProtection = csrf({
   cookie: true,
 });
-const allowedOrigins = (
-  process.env.CORS_ORIGINS ||
-  process.env.FRONTEND_URL ||
-  "http://localhost:5175"
-)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const allowedOrigins = process.env.FRONTEND_URL || "http://localhost:5173";
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-CSRF-Token",
+    "x-csrf-token",
+  ],
+  credentials: true,
+};
 
 app.use(
   helmet({
@@ -25,24 +31,20 @@ app.use(
     crossOriginResourcePolicy: { policy: "cross-origin" },
   }),
 );
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
-      }
-
-      callback(new Error("CORS origin not allowed"));
-    },
-    credentials: true,
-  }),
-);
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(csrfProtection);
-app.use(generalLimiter);
+app.use((req, res, next) => {
+  if (req.method === "OPTIONS") {
+    next();
+    return;
+  }
+
+  generalLimiter(req, res, next);
+});
 app.set("trust proxy", 1);
 
 app.get("/api/csrf-token", (req, res) => {

@@ -28,7 +28,7 @@ export function RegisterPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     await register(form);
-    setMessage("Registration complete. Please check your email for the OTP.");
+    setMessage("Registration complete. Continue with OTP verification.");
     navigate("/verify-registration", { state: { email: form.email } });
   };
 

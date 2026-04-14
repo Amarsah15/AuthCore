@@ -10,6 +10,54 @@ import { generateTokens } from "../utils/token.utils.js";
 import { AppError } from "../utils/appError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+const generateHashedOtp = async (email) => {
+  const rawOtp = otpGenerator.generate(6, {
+    upperCaseAlphabets: false,
+    specialChars: false,
+    alphabets: false,
+  });
+
+  const hashedOtp = await bcrypt.hash(rawOtp, 10);
+
+  await OTP.deleteMany({ email });
+  await OTP.create({
+    email,
+    otp: hashedOtp,
+    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+  });
+
+  return rawOtp;
+};
+
+const getRecentOtp = async (email) => {
+  return OTP.findOne({ email }).sort({ createdAt: -1 });
+};
+
+const createAuthenticatedSession = async (req, res, user) => {
+  const { accessToken, refreshToken } = generateTokens(user);
+
+  user.sessions.push({
+    refreshToken,
+    ip: req.ip,
+    userAgent: req.headers["user-agent"],
+  });
+  await user.save();
+
+  res.cookie("accessToken", accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+
+  return { accessToken, refreshToken };
+};
+
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -32,19 +80,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     password: hashedPassword,
   });
 
-  const rawOtp = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
-    alphabets: false,
-  });
-
-  const hashedOtp = await bcrypt.hash(rawOtp, 10);
-
-  await OTP.create({
-    email,
-    otp: hashedOtp,
-    expiresAt: new Date(Date.now() + 5 * 60 * 1000),
-  });
+  const rawOtp = await generateHashedOtp(email);
 
   await sendEmail(
     email,
@@ -90,13 +126,15 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     throw new AppError("Invalid or expired OTP", 400);
   }
 
-  const user = await User.findOneAndUpdate(
-    { email },
-    { isVerified: true },
-    { new: true },
-  );
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.isVerified = true;
 
   await OTP.deleteMany({ email });
+  const { accessToken } = await createAuthenticatedSession(req, res, user);
 
   await createLog({
     user: user?._id,
@@ -108,6 +146,92 @@ export const verifyOtp = asyncHandler(async (req, res) => {
   res.status(200).json({
     success: true,
     message: "Account verified successfully",
+    accessToken,
+    data: user,
+  });
+});
+
+export const resendVerificationOtp = asyncHandler(async (req, res) => {
+  const email = req.body.email || req.user?.email;
+
+  if (!email) {
+    throw new AppError("Email is required", 400);
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  if (user.isVerified) {
+    res.status(200).json({
+      success: true,
+      message: "Account is already verified",
+    });
+    return;
+  }
+
+  const existingOtp = await getRecentOtp(user.email);
+  if (existingOtp && existingOtp.createdAt.getTime() > Date.now() - 60 * 1000) {
+    throw new AppError("Please wait before requesting another OTP", 429);
+  }
+
+  const rawOtp = await generateHashedOtp(user.email);
+
+  await sendEmail(
+    user.email,
+    "Verify your account",
+    otpTemplate(rawOtp, "Email Verification"),
+  );
+
+  await createLog({
+    user: user._id,
+    action: "VERIFICATION_OTP_RESENT",
+    req,
+    metadata: { email: user.email },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Verification OTP sent to your email",
+  });
+});
+
+export const verifyCurrentUserOtp = asyncHandler(async (req, res) => {
+  const { otp } = req.body;
+  const email = req.user.email;
+  const otpRecord = await OTP.findOne({ email });
+
+  if (!otpRecord) {
+    throw new AppError("Invalid OTP", 400);
+  }
+
+  const isMatch = await bcrypt.compare(otp, otpRecord.otp);
+  if (!isMatch || otpRecord.expiresAt < new Date()) {
+    throw new AppError("Invalid or expired OTP", 400);
+  }
+
+  const user = await User.findById(req.user.id).select("-password");
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  user.isVerified = true;
+  await user.save();
+  await OTP.deleteMany({ email });
+
+  await createLog({
+    user: user._id,
+    action: "ACCOUNT_VERIFIED",
+    req,
+    metadata: { email },
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Account verified successfully",
+    data: user,
   });
 });
 
@@ -125,11 +249,8 @@ export const loginWithOtp = asyncHandler(async (req, res) => {
     throw new AppError("User not found", 404);
   }
 
-  const existingOtp = await OTP.findOne({ email });
-  if (
-    existingOtp &&
-    existingOtp.createdAt.getTime() > Date.now() - 60 * 1000
-  ) {
+  const existingOtp = await getRecentOtp(email);
+  if (existingOtp && existingOtp.createdAt.getTime() > Date.now() - 60 * 1000) {
     await createLog({
       user: user._id,
       action: "LOGIN_OTP_RATE_LIMITED",
@@ -141,9 +262,9 @@ export const loginWithOtp = asyncHandler(async (req, res) => {
   }
 
   const otp = otpGenerator.generate(6, {
+    lowerCaseAlphabets: false,
     upperCaseAlphabets: false,
     specialChars: false,
-    alphabets: false,
   });
 
   const hashedOtp = await bcrypt.hash(otp, 10);
@@ -196,26 +317,7 @@ export const verifyLoginOtp = asyncHandler(async (req, res) => {
     throw new AppError("User not found", 404);
   }
 
-  const { accessToken, refreshToken } = generateTokens(user);
-
-  user.sessions.push({
-    refreshToken,
-    ip: req.ip,
-    userAgent: req.headers["user-agent"],
-  });
-  await user.save();
-
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+  const { accessToken } = await createAuthenticatedSession(req, res, user);
 
   await OTP.deleteMany({ email });
 
@@ -285,26 +387,7 @@ export const loginWithPassword = asyncHandler(async (req, res) => {
   user.loginAttempts = 0;
   user.lockUntil = null;
 
-  const { accessToken, refreshToken } = generateTokens(user);
-
-  user.sessions.push({
-    refreshToken,
-    ip: req.ip,
-    userAgent: req.headers["user-agent"],
-  });
-  await user.save();
-
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
-
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-  });
+  const { accessToken } = await createAuthenticatedSession(req, res, user);
 
   await createLog({
     user: user._id,
@@ -348,11 +431,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     expiresAt: new Date(Date.now() + 5 * 60 * 1000),
   });
 
-  await sendEmail(
-    email,
-    "Reset Password",
-    otpTemplate(otp, "Password Reset"),
-  );
+  await sendEmail(email, "Reset Password", otpTemplate(otp, "Password Reset"));
 
   await createLog({
     user: user._id,
@@ -413,7 +492,9 @@ export const logoutUser = asyncHandler(async (req, res) => {
   const token = req.cookies.refreshToken;
   const user = req.user;
 
-  user.sessions = user.sessions.filter((session) => session.refreshToken !== token);
+  user.sessions = user.sessions.filter(
+    (session) => session.refreshToken !== token,
+  );
   await user.save();
 
   res.clearCookie("accessToken");

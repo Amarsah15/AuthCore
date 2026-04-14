@@ -11,6 +11,7 @@ import { ResetPasswordPage } from "../pages/ResetPasswordPage";
 import { SessionsPage } from "../pages/SessionsPage";
 import { VerifyLoginOtpPage } from "../pages/VerifyLoginOtpPage";
 import { VerifyRegistrationPage } from "../pages/VerifyRegistrationPage";
+import { NotFoundPage } from "../pages/NotFoundPage";
 
 export function AppRouter() {
   return (
@@ -33,6 +34,8 @@ export function AppRouter() {
           <Route path="/sessions" element={<SessionsPage />} />
         </Route>
       </Route>
+
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
