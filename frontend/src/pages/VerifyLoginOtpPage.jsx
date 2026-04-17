@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthCard } from "../components/ui/AuthCard";
 import { FieldGroup } from "../components/ui/FieldGroup";
@@ -9,6 +9,7 @@ export function VerifyLoginOtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const verifyLoginOtp = useAuthStore((state) => state.verifyLoginOtp);
+  const clearError = useAuthStore((state) => state.clearError);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
 
@@ -16,6 +17,10 @@ export function VerifyLoginOtpPage() {
     email: location.state?.email || "",
     otp: "",
   });
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleChange = (event) => {
     setForm((current) => ({
@@ -26,7 +31,18 @@ export function VerifyLoginOtpPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await verifyLoginOtp(form);
+    const response = await verifyLoginOtp(form);
+
+    if (response?.requiresTwoFactor) {
+      navigate("/verify-2fa", {
+        state: {
+          twoFactorToken: response.twoFactorToken,
+          email: form.email,
+        },
+      });
+      return;
+    }
+
     navigate("/dashboard");
   };
 

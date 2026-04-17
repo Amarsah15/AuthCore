@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthCard } from "../components/ui/AuthCard";
 import { FieldGroup } from "../components/ui/FieldGroup";
@@ -8,11 +8,16 @@ import { useAuthStore } from "../store/auth.store";
 export function ForgotPasswordPage() {
   const navigate = useNavigate();
   const forgotPassword = useAuthStore((state) => state.forgotPassword);
+  const clearError = useAuthStore((state) => state.clearError);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
 
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

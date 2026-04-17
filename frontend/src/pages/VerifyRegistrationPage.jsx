@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthCard } from "../components/ui/AuthCard";
 import { FieldGroup } from "../components/ui/FieldGroup";
@@ -12,6 +12,7 @@ export function VerifyRegistrationPage() {
   const resendVerificationOtpForEmail = useAuthStore(
     (state) => state.resendVerificationOtpForEmail,
   );
+  const clearError = useAuthStore((state) => state.clearError);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
 
@@ -20,6 +21,10 @@ export function VerifyRegistrationPage() {
     otp: "",
   });
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleChange = (event) => {
     setForm((current) => ({

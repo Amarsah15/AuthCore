@@ -48,13 +48,15 @@ export function SessionsPage() {
   const sessions = useAuthStore((state) => state.sessions);
   const error = useAuthStore((state) => state.error);
   const isLoading = useAuthStore((state) => state.isLoading);
+  const clearError = useAuthStore((state) => state.clearError);
   const fetchSessions = useAuthStore((state) => state.fetchSessions);
   const logoutAllDevices = useAuthStore((state) => state.logoutAllDevices);
   const logoutSession = useAuthStore((state) => state.logoutSession);
 
   useEffect(() => {
+    clearError();
     fetchSessions();
-  }, [fetchSessions]);
+  }, [clearError, fetchSessions]);
 
   return (
     <div className="grid gap-6">

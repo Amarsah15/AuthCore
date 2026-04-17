@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 export function AuthLayout() {
   return (
     <div className="relative flex min-h-screen overflow-hidden bg-sand text-ink-900">
-      <div className="absolute inset-0 bg-auth-grid bg-[size:36px_36px] opacity-50" />
+      <div className="absolute inset-0 bg-auth-grid bg-size-[36px_36px] opacity-50" />
       <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-brand-200/50 blur-3xl" />
       <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-brand-100/70 blur-3xl" />
 
@@ -11,14 +11,33 @@ export function AuthLayout() {
         <section className="hidden px-10 py-14 lg:flex lg:flex-col lg:justify-between">
           <div>
             <div className="inline-flex items-center rounded-full border border-brand-200 bg-white/70 px-4 py-2 text-sm font-medium text-brand-800">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="mr-2 h-4 w-4"
+                focusable="false"
+              >
+                <path
+                  d="M12 2.8l6.2 2.3v5.2c0 4.3-2.6 7.6-6.2 8.7-3.6-1.1-6.2-4.4-6.2-8.7V5.1L12 2.8z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M9.6 11.4l1.7 1.7 3.3-3.4"
+                  fill="none"
+                  stroke="#f8fbf8"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
               AuthCore
             </div>
             <h1 className="mt-8 max-w-xl text-5xl font-semibold leading-tight text-ink-950">
               Build trust into every sign-in, reset, session, and device.
             </h1>
             <p className="mt-5 max-w-lg text-base leading-7 text-ink-800">
-              Production-style authentication flows with secure cookies, CSRF protection,
-              device tracking, and clean user journeys.
+              Production-style authentication flows with secure cookies, CSRF
+              protection, device tracking, and clean user journeys.
             </p>
           </div>
 
@@ -27,9 +46,15 @@ export function AuthLayout() {
               Security Layers
             </p>
             <div className="mt-4 grid gap-3 text-sm text-ink-800">
-              <div className="rounded-2xl bg-brand-50 px-4 py-4">JWT rotation and session tracking</div>
-              <div className="rounded-2xl bg-brand-50 px-4 py-4">CSRF and cookie-based protection</div>
-              <div className="rounded-2xl bg-brand-50 px-4 py-4">Audit logs and device visibility</div>
+              <div className="rounded-2xl bg-brand-50 px-4 py-4">
+                JWT rotation and session tracking
+              </div>
+              <div className="rounded-2xl bg-brand-50 px-4 py-4">
+                CSRF and cookie-based protection
+              </div>
+              <div className="rounded-2xl bg-brand-50 px-4 py-4">
+                Audit logs and device visibility
+              </div>
             </div>
           </div>
         </section>

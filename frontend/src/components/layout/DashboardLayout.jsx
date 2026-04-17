@@ -14,7 +14,7 @@ export function DashboardLayout() {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -22,7 +22,9 @@ export function DashboardLayout() {
       <div className="mx-auto max-w-7xl">
         <header className="panel mb-6 flex flex-col gap-4 px-5 py-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-brand-700">AuthCore Workspace</p>
+            <p className="text-sm uppercase tracking-[0.22em] text-brand-700">
+              AuthCore Workspace
+            </p>
             <h1 className="mt-1 text-2xl font-semibold text-ink-950">
               Welcome back{user?.name ? `, ${user.name}` : ""}
             </h1>
@@ -44,7 +46,11 @@ export function DashboardLayout() {
                 {item.label}
               </NavLink>
             ))}
-            <button className="btn-secondary" onClick={handleLogout} disabled={isLoading}>
+            <button
+              className="btn-secondary"
+              onClick={handleLogout}
+              disabled={isLoading}
+            >
               Logout
             </button>
           </div>

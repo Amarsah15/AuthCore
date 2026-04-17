@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api/v1";
-const API_BASE_URL = "https://authcore-24j0.onrender.com/api/v1";
-const API_ORIGIN = new URL(API_BASE_URL).origin;
+export const API_BASE_URL = "http://localhost:5000/api/v1";
+export const API_ORIGIN = new URL(API_BASE_URL).origin;
 
 let csrfToken = null;
 
@@ -57,14 +56,8 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshResponse = await api.post("/auth/refresh");
-        return api({
-          ...originalRequest,
-          headers: {
-            ...originalRequest.headers,
-            Authorization: `Bearer ${refreshResponse.data.accessToken}`,
-          },
-        });
+        await api.post("/auth/refresh");
+        return api(originalRequest);
       } catch (refreshError) {
         return Promise.reject(refreshError);
       }

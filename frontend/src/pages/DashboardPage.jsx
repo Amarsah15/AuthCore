@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth.store";
 
 export function DashboardPage() {
@@ -11,9 +11,19 @@ export function DashboardPage() {
   const resendVerificationOtp = useAuthStore(
     (state) => state.resendVerificationOtp,
   );
+  const twoFactorSetup = useAuthStore((state) => state.twoFactorSetup);
+  const setupTwoFactor = useAuthStore((state) => state.setupTwoFactor);
+  const enableTwoFactor = useAuthStore((state) => state.enableTwoFactor);
+  const disableTwoFactor = useAuthStore((state) => state.disableTwoFactor);
   const clearError = useAuthStore((state) => state.clearError);
   const [otp, setOtp] = useState("");
+  const [twoFactorCode, setTwoFactorCode] = useState("");
   const [message, setMessage] = useState("");
+  const [twoFactorMessage, setTwoFactorMessage] = useState("");
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleSendVerification = async () => {
     clearError();
@@ -29,6 +39,37 @@ export function DashboardPage() {
     const response = await verifyCurrentUserOtp(otp);
     setOtp("");
     setMessage(response.message || "Account verified successfully.");
+  };
+
+  const handleStartTwoFactorSetup = async () => {
+    clearError();
+    setTwoFactorMessage("");
+    const response = await setupTwoFactor();
+    setTwoFactorMessage(
+      response.message || "Scan the QR code to continue setup.",
+    );
+  };
+
+  const handleEnableTwoFactor = async (event) => {
+    event.preventDefault();
+    clearError();
+    setTwoFactorMessage("");
+    const response = await enableTwoFactor(twoFactorCode);
+    setTwoFactorCode("");
+    setTwoFactorMessage(
+      response.message || "Two-factor authentication enabled.",
+    );
+  };
+
+  const handleDisableTwoFactor = async (event) => {
+    event.preventDefault();
+    clearError();
+    setTwoFactorMessage("");
+    const response = await disableTwoFactor(twoFactorCode);
+    setTwoFactorCode("");
+    setTwoFactorMessage(
+      response.message || "Two-factor authentication disabled.",
+    );
   };
 
   return (
@@ -137,6 +178,125 @@ export function DashboardPage() {
               ) : null}
               {error ? <p className="text-sm text-red-600">{error}</p> : null}
             </div>
+          )}
+        </div>
+
+        <div className="rounded-4xl border border-brand-100 bg-white p-6 shadow-[0_18px_40px_rgba(20,80,47,0.06)] lg:col-span-2">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.22em] text-brand-700">
+                Two-Factor Authentication
+              </p>
+              <h3 className="mt-2 text-2xl font-semibold text-ink-950">
+                8-digit authenticator protection
+              </h3>
+            </div>
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                user?.twoFactorEnabled
+                  ? "bg-brand-100 text-brand-800"
+                  : "bg-amber-100 text-amber-700"
+              }`}
+            >
+              {user?.twoFactorEnabled ? "Enabled" : "Disabled"}
+            </span>
+          </div>
+
+          <p className="mt-3 text-sm leading-6 text-ink-800">
+            Compatible with Google Authenticator and other TOTP apps configured
+            for 8-digit codes.
+          </p>
+
+          {twoFactorMessage ? (
+            <p className="mt-4 text-sm text-brand-800">{twoFactorMessage}</p>
+          ) : null}
+          {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
+
+          {!user?.twoFactorEnabled ? (
+            <div className="mt-5 space-y-4">
+              <button
+                className="btn-secondary"
+                type="button"
+                onClick={handleStartTwoFactorSetup}
+                disabled={isLoading}
+              >
+                {isLoading ? "Preparing..." : "Start 2FA setup"}
+              </button>
+
+              {twoFactorSetup ? (
+                <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+                  <div className="rounded-3xl border border-brand-100 bg-brand-50 p-4">
+                    <p className="text-sm font-medium text-ink-900">
+                      Scan this QR code
+                    </p>
+                    {twoFactorSetup.qrCodeDataUrl ? (
+                      <img
+                        src={twoFactorSetup.qrCodeDataUrl}
+                        alt="2FA QR code"
+                        className="mt-3 w-full max-w-[220px] rounded-2xl border border-brand-100 bg-white p-2"
+                      />
+                    ) : null}
+                  </div>
+
+                  <form className="space-y-3" onSubmit={handleEnableTwoFactor}>
+                    <p className="text-sm text-ink-800">
+                      Manual key:{" "}
+                      <span className="font-semibold text-ink-950">
+                        {twoFactorSetup.manualKey}
+                      </span>
+                    </p>
+                    <label className="block">
+                      <span className="mb-2 block text-sm font-medium text-ink-900">
+                        Enter your 8-digit code
+                      </span>
+                      <input
+                        className="field"
+                        value={twoFactorCode}
+                        onChange={(event) =>
+                          setTwoFactorCode(event.target.value)
+                        }
+                        placeholder="12345678"
+                        maxLength={8}
+                        inputMode="numeric"
+                      />
+                    </label>
+                    <button
+                      className="btn-primary"
+                      type="submit"
+                      disabled={isLoading || twoFactorCode.trim().length !== 8}
+                    >
+                      {isLoading ? "Enabling..." : "Enable 2FA"}
+                    </button>
+                  </form>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <form
+              className="mt-5 max-w-md space-y-3"
+              onSubmit={handleDisableTwoFactor}
+            >
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-ink-900">
+                  Enter 8-digit code to disable
+                </span>
+                <input
+                  className="field"
+                  value={twoFactorCode}
+                  onChange={(event) => setTwoFactorCode(event.target.value)}
+                  placeholder="12345678"
+                  maxLength={8}
+                  inputMode="numeric"
+                />
+              </label>
+              <button
+                className="btn-secondary"
+                type="submit"
+                disabled={isLoading || twoFactorCode.trim().length !== 8}
+              >
+                {isLoading ? "Disabling..." : "Disable 2FA"}
+              </button>
+            </form>
           )}
         </div>
       </div>

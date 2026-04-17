@@ -1,4 +1,4 @@
-# AuthCore
+# ![AuthCore logo](frontend/public/favicon.svg) AuthCore
 
 > Security-first authentication with OTP flows, session tracking, CSRF-aware requests, and a polished React experience.
 
@@ -21,6 +21,8 @@ AuthCore is built to feel like a real product, not just a basic auth demo. The p
 - Rate limiting and audit logging
 - OpenAPI docs for backend routes
 - Custom 404 experience and Vercel SPA routing support
+- Google OAuth sign-in and sign-up flow
+- Two-factor authentication (8-digit TOTP) with QR setup
 
 ## Experience
 
@@ -51,6 +53,7 @@ The frontend is styled around the AuthCore visual direction:
 - Nodemailer
 - CSRF protection
 - Express rate limiting
+- Otplib + QRCode (TOTP 2FA)
 
 ## Project Structure
 
@@ -117,7 +120,8 @@ AuthCore/
 |       |   |-- ResetPasswordPage.jsx
 |       |   |-- SessionsPage.jsx
 |       |   |-- VerifyLoginOtpPage.jsx
-|       |   `-- VerifyRegistrationPage.jsx
+|       |   |-- VerifyRegistrationPage.jsx
+|       |   `-- VerifyTwoFactorPage.jsx
 |       |-- routes/
 |       |   `-- AppRouter.jsx
 |       `-- store/
@@ -140,6 +144,14 @@ AuthCore/
 
 - Login with password
 - Or request a login OTP and verify it
+- Or continue with Google / X OAuth
+
+### Two-Factor Authentication
+
+- Start 2FA setup from dashboard
+- Scan QR in an authenticator app
+- Verify with 8-digit code to enable
+- Use 2FA challenge during login when enabled
 
 ### Recovery
 
@@ -174,18 +186,29 @@ Create `backend/.env`:
 
 ```env
 PORT=5000
+
 NODE_ENV=development
+
 MONGO_URI=mongodb://127.0.0.1:27017/authcore
+
 ACCESS_TOKEN_SECRET=change-me-access
 REFRESH_TOKEN_SECRET=change-me-refresh
+
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_SECURE=false
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
 EMAIL_FROM=AuthCore <your-email@gmail.com>
-CORS_ORIGINS=http://localhost:5173,http://localhost:5175
-FRONTEND_URL=http://localhost:5175
+
+CORS_ORIGINS=http://localhost:5173,https://authcore-rose.vercel.app
+FRONTEND_URL=http://localhost:5173
+
+OAUTH_STATE_SECRET=change-me-oauth-state
+
+GOOGLE_OAUTH_CLIENT_ID=your-google-client-id
+GOOGLE_OAUTH_CLIENT_SECRET=your-google-client-secret
+GOOGLE_OAUTH_REDIRECT_URI=http://localhost:5000/api/v1/auth/oauth/google/callback
 ```
 
 Run the backend:

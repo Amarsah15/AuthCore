@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthCard } from "../components/ui/AuthCard";
 import { FieldGroup } from "../components/ui/FieldGroup";
@@ -9,6 +9,7 @@ export function ResetPasswordPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const resetPassword = useAuthStore((state) => state.resetPassword);
+  const clearError = useAuthStore((state) => state.clearError);
   const isLoading = useAuthStore((state) => state.isLoading);
   const error = useAuthStore((state) => state.error);
 
@@ -18,6 +19,10 @@ export function ResetPasswordPage() {
     newPassword: "",
   });
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    clearError();
+  }, [clearError]);
 
   const handleChange = (event) => {
     setForm((current) => ({
