@@ -363,5 +363,5 @@ Available for further extension.
 ---
 
 <div align="center">
-  <sub>Built with care by <a href="https://github.com/Amarsah15">Amarsah15</a></sub>
+  <sub>Built with care by <a href="https://github.com/Amarsah15">Amarnath Kumar</a></sub>
 </div>
