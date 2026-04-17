@@ -10,11 +10,8 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Express](https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongoosejs.com)
-[![License](https://img.shields.io/badge/License-Personal%20%2F%20Portfolio-a3e635?style=for-the-badge)](#license)
 
 <br/>
-
-_A full-stack authentication app that feels like a real product — not just a demo._
 
 </div>
 
