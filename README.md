@@ -1,59 +1,130 @@
-# ![AuthCore logo](frontend/public/favicon.svg) AuthCore
+<div align="center">
 
-> Security-first authentication with OTP flows, session tracking, CSRF-aware requests, and a polished React experience.
+<img src="frontend/public/favicon.svg" width="72" height="72" alt="AuthCore Logo" />
 
-AuthCore is a full-stack authentication app built with a React frontend and an Express + MongoDB backend. It is designed around modern auth flows: registration with email verification, password and OTP login, reset-password flows, protected sessions, and device visibility.
+# AuthCore
 
-## Live Demo
+**Security-first authentication with a polished React experience**
 
-[https://authcore-rose.vercel.app](https://authcore-rose.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-authcore--rose.vercel.app-4ade80?style=for-the-badge&logo=vercel&logoColor=white)](https://authcore-rose.vercel.app)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
+[![Express](https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongoosejs.com)
+[![License](https://img.shields.io/badge/License-Personal%20%2F%20Portfolio-a3e635?style=for-the-badge)](#license)
 
-## Why AuthCore
+<br/>
 
-AuthCore is built to feel like a real product, not just a basic auth demo. The project focuses on secure defaults, clean UX, and production-style account flows.
+_A full-stack authentication app that feels like a real product — not just a demo._
 
-- Email OTP verification for registration
-- Password login and OTP login
-- Password reset with OTP
-- Session visibility and single-device revoke
-- Logout current device or all devices
-- CSRF-aware API requests with cookies
-- Rate limiting and audit logging
-- OpenAPI docs for backend routes
-- Custom 404 experience and Vercel SPA routing support
-- Google OAuth sign-in and sign-up flow
-- Two-factor authentication (8-digit TOTP) with QR setup
+</div>
 
-## Experience
+---
 
-The frontend is styled around the AuthCore visual direction:
+## Features at a Glance
 
-- soft green security-focused palette
-- glassy panels and clean dashboard cards
-- verification-first account center
-- device session management UI
-- responsive auth and dashboard layouts
+| Feature                    | Description                                            |
+| -------------------------- | ------------------------------------------------------ |
+| **Email OTP Verification** | Register with email confirmation via one-time passcode |
+| **Password & OTP Login**   | Flexible login methods for every user                  |
+| **Two-Factor Auth (TOTP)** | 8-digit TOTP with QR code setup via authenticator apps |
+| **Password Reset Flow**    | OTP-based recovery with secure token handling          |
+| **Session Management**     | View, identify, and revoke active device sessions      |
+| **Google OAuth**           | Sign in or sign up with Google                         |
+| **CSRF Protection**        | CSRF-aware API requests with secure cookies            |
+| **Audit Logging**          | Track auth events across accounts                      |
+| **Rate Limiting**          | Built-in abuse prevention on auth routes               |
+| **OpenAPI / Swagger Docs** | Interactive API documentation out of the box           |
+
+---
+
+## 🚀 Live Demo
+
+**[https://authcore-rose.vercel.app](https://authcore-rose.vercel.app)**
+
+> Try the full flow: register → verify email OTP → login → manage sessions → enable 2FA
+
+---
+
+## Core Auth Flows
+
+<details>
+<summary><strong>Registration</strong></summary>
+
+1. User submits their details to create an account
+2. Backend sends a time-limited email OTP
+3. User is redirected to the verification page
+4. OTP verification activates the account
+5. User is signed in and lands on the dashboard
+
+</details>
+
+<details>
+<summary><strong>Login</strong></summary>
+
+- Standard password login
+- OTP-based passwordless login
+- Google OAuth (sign in or sign up)
+- 2FA challenge when TOTP is enabled
+
+</details>
+
+<details>
+<summary><strong>Two-Factor Authentication</strong></summary>
+
+1. Initiate 2FA setup from the dashboard
+2. Scan the QR code in any authenticator app (Google Authenticator, Authy, etc.)
+3. Confirm with the 8-digit TOTP code to activate
+4. Future logins will prompt for the TOTP challenge
+
+</details>
+
+<details>
+<summary><strong>Password Recovery</strong></summary>
+
+1. Request a password reset from the forgot-password page
+2. Enter the OTP sent to your email
+3. Set a new password securely
+
+</details>
+
+<details>
+<summary><strong>Session Management</strong></summary>
+
+- View all active sessions with device info
+- Identify your current session
+- Revoke individual sessions
+- Log out of all devices at once
+
+</details>
+
+---
 
 ## Tech Stack
 
 ### Frontend
 
-- React 19
-- Vite
-- React Router
-- Zustand
-- Axios
-- Tailwind CSS v4
+| Tool                                       | Purpose                       |
+| ------------------------------------------ | ----------------------------- |
+| [React 19](https://react.dev)              | UI framework                  |
+| [Vite](https://vitejs.dev)                 | Build tool                    |
+| [React Router](https://reactrouter.com)    | Client-side routing           |
+| [Zustand](https://zustand-demo.pmnd.rs)    | Auth state management         |
+| [Axios](https://axios-http.com)            | HTTP client with CSRF support |
+| [Tailwind CSS v4](https://tailwindcss.com) | Utility-first styling         |
 
 ### Backend
 
-- Express 5
-- MongoDB + Mongoose
-- JWT
-- Nodemailer
-- CSRF protection
-- Express rate limiting
-- Otplib + QRCode (TOTP 2FA)
+| Tool                                                                                         | Purpose                   |
+| -------------------------------------------------------------------------------------------- | ------------------------- |
+| [Express 5](https://expressjs.com)                                                           | Web framework             |
+| [MongoDB + Mongoose](https://mongoosejs.com)                                                 | Database & ODM            |
+| [JWT](https://jwt.io)                                                                        | Stateless auth tokens     |
+| [Nodemailer](https://nodemailer.com)                                                         | Transactional email (OTP) |
+| [Otplib](https://github.com/yeojz/otplib) + [QRCode](https://github.com/soldair/node-qrcode) | TOTP 2FA                  |
+| [csurf](https://github.com/expressjs/csurf)                                                  | CSRF protection           |
+| [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)               | Rate limiting             |
+
+---
 
 ## Project Structure
 
@@ -130,6 +201,8 @@ AuthCore/
 `-- .gitignore
 ```
 
+---
+
 ## Core Flows
 
 ### Registration
@@ -166,16 +239,18 @@ AuthCore/
 - Revoke older sessions
 - Logout all devices when needed
 
+---
+
 ## Local Setup
 
-### 1. Clone the project
+### 1 — Clone the repo
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Amarsah15/AuthCore.git
 cd AuthCore
 ```
 
-### 2. Backend setup
+### 2 — Backend
 
 ```bash
 cd backend
@@ -186,7 +261,6 @@ Create `backend/.env`:
 
 ```env
 PORT=5000
-
 NODE_ENV=development
 
 MONGO_URI=mongodb://127.0.0.1:27017/authcore
@@ -205,19 +279,16 @@ CORS_ORIGINS=http://localhost:5173,https://authcore-rose.vercel.app
 FRONTEND_URL=http://localhost:5173
 
 OAUTH_STATE_SECRET=change-me-oauth-state
-
 GOOGLE_OAUTH_CLIENT_ID=your-google-client-id
 GOOGLE_OAUTH_CLIENT_SECRET=your-google-client-secret
 GOOGLE_OAUTH_REDIRECT_URI=http://localhost:5000/api/v1/auth/oauth/google/callback
 ```
 
-Run the backend:
-
 ```bash
 npm run dev
 ```
 
-### 3. Frontend setup
+### 3 — Frontend
 
 ```bash
 cd ../frontend
@@ -230,61 +301,70 @@ Create `frontend/.env`:
 VITE_API_URL=http://localhost:5000/api/v1
 ```
 
-Run the frontend:
-
 ```bash
 npm run dev
 ```
 
-## API and Docs
+---
 
-When the backend is running:
+## API & Docs
 
-- App backend: `http://localhost:5000`
-- Auth base: `http://localhost:5000/api/v1/auth`
-- Swagger UI: `http://localhost:5000/api-docs`
-- OpenAPI JSON: `http://localhost:5000/api-docs.json`
-- CSRF token route: `http://localhost:5000/api/csrf-token`
+Once the backend is running:
 
-## Deployment Notes
+| Endpoint                               | Description   |
+| -------------------------------------- | ------------- |
+| `http://localhost:5000`                | Backend root  |
+| `http://localhost:5000/api/v1/auth`    | Auth base URL |
+| `http://localhost:5000/api-docs`       | Swagger UI    |
+| `http://localhost:5000/api-docs.json`  | OpenAPI JSON  |
+| `http://localhost:5000/api/csrf-token` | CSRF token    |
 
-### Frontend
-
-The frontend includes a `vercel.json` rewrite so direct visits to routes like `/login`, `/register`, `/dashboard`, and `/sessions` work correctly on Vercel.
-
-### Backend
-
-Before deploying the backend, make sure you set:
-
-- MongoDB connection string
-- JWT secrets
-- SMTP email credentials
-- allowed frontend origins
+---
 
 ## Suggested Test Flow
 
-1. Start the backend
-2. Start the frontend
-3. Register a new user
+```
+1. Start the backend            npm run dev  (inside /backend)
+2. Start the frontend           npm run dev  (inside /frontend)
+3. Register a new account
 4. Verify the email OTP
-5. Confirm redirect to dashboard
+5. Confirm dashboard redirect
 6. Login from another browser
 7. Open the Sessions page
 8. Revoke a session
-9. Test forgot-password flow
+9. Test the forgot-password flow
+10. Enable 2FA from the dashboard
+```
+
+---
 
 ## Security Notes
 
-- Use Gmail App Passwords or a dedicated SMTP provider for production
-- Never commit real secrets to the repository
-- Rotate any exposed credentials immediately
-- Keep CORS origins restricted to trusted frontend domains
-- Use secure cookies in production deployments
+- Use **Gmail App Passwords** or a dedicated SMTP provider (Resend, Postmark) in production
+- **Never commit real secrets** to the repository — use environment variables only
+- Rotate any accidentally exposed credentials immediately
+- Keep **CORS origins** restricted to trusted frontend domains
+- Enable **secure cookies** and HTTPS in production deployments
 
-## AuthCore Theme
+---
 
-AuthCore is meant to feel calm, trustworthy, and operationally sharp. The product language combines secure workflows with a softer interface so account management feels confident instead of intimidating.
+## Design Direction
+
+AuthCore is styled around a soft green, security-focused palette. The UI uses:
+
+- Glassy panels and clean dashboard cards
+- Verification-first account center
+- Responsive auth and dashboard layouts
+- Calm, trustworthy tone — confident instead of intimidating
+
+---
 
 ## License
 
-This project is available for personal learning, portfolio use, and further extension.
+Available for further extension.
+
+---
+
+<div align="center">
+  <sub>Built with care by <a href="https://github.com/Amarsah15">Amarsah15</a></sub>
+</div>
