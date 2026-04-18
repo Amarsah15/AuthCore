@@ -11,9 +11,7 @@ const app = express();
 const csrfProtection = csrf({
   cookie: true,
 });
-const allowedOrigins = (
-  "http://localhost:5173"
-)
+const allowedOrigins = ("http://localhost:5173", process.env.FRONTEND_URL)
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
