@@ -36,7 +36,7 @@
 
 ## 🚀 Live Demo
 
-**[https://authcore-rose.vercel.app](https://authcore-rose.vercel.app)**
+**[https://authcore-amarnath-kumar.vercel.app/](https://authcore-amarnath-kumar.vercel.app/)**
 
 > Try the full flow: register → verify email OTP → login → manage sessions → enable 2FA
 
@@ -272,7 +272,7 @@ EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
 EMAIL_FROM=AuthCore <your-email@gmail.com>
 
-CORS_ORIGINS=http://localhost:5173,https://authcore-rose.vercel.app
+CORS_ORIGINS=http://localhost:5173
 FRONTEND_URL=http://localhost:5173
 
 OAUTH_STATE_SECRET=change-me-oauth-state
