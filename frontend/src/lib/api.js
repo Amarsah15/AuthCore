@@ -1,6 +1,10 @@
 import axios from "axios";
 
-export const API_BASE_URL = "http://localhost:5000/api/v1";
+const DEFAULT_DEV_API_URL = "http://localhost:5000/api/v1";
+
+export const API_BASE_URL = import.meta.env.DEV
+  ? DEFAULT_DEV_API_URL
+  : import.meta.env.VITE_API_URL?.trim();
 export const API_ORIGIN = new URL(API_BASE_URL).origin;
 
 let csrfToken = null;
