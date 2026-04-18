@@ -11,10 +11,31 @@ const app = express();
 const csrfProtection = csrf({
   cookie: true,
 });
-const allowedOrigins = ("http://localhost:5173", process.env.FRONTEND_URL)
-  .split(",")
-  .map((origin) => origin.trim())
-  .filter(Boolean);
+const normalizeOrigin = (value) => {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return null;
+  }
+
+  try {
+    return new URL(value.trim()).origin;
+  } catch {
+    return null;
+  }
+};
+
+const allowedOrigins = Array.from(
+  new Set(
+    [
+      "http://localhost:5173",
+      process.env.FRONTEND_URL,
+      process.env.CORS_ORIGINS,
+    ]
+      .filter(Boolean)
+      .flatMap((value) => value.split(","))
+      .map((origin) => normalizeOrigin(origin))
+      .filter(Boolean),
+  ),
+);
 
 const corsOptions = {
   origin: (origin, callback) => {
@@ -23,7 +44,9 @@ const corsOptions = {
       return;
     }
 
-    callback(new Error("Not allowed by CORS"));
+    const corsError = new Error("Not allowed by CORS");
+    corsError.status = 403;
+    callback(corsError);
   },
   methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: [
