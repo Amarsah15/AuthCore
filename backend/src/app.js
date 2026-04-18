@@ -8,8 +8,14 @@ import { generalLimiter } from "./middleware/rateLimit.middleware.js";
 import { openApiDocument, swaggerHtml } from "./docs/openapi.js";
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
 const csrfProtection = csrf({
-  cookie: true,
+  cookie: {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+    path: "/",
+  },
 });
 const normalizeOrigin = (value) => {
   if (typeof value !== "string" || value.trim().length === 0) {
