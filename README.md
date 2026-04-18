@@ -6,7 +6,7 @@
 
 **Security-first authentication with a polished React experience**
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-authcore--rose.vercel.app-4ade80?style=for-the-badge&logo=vercel&logoColor=white)](https://authcore-rose.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-authcore--rose.vercel.app-4ade80?style=for-the-badge&logo=vercel&logoColor=white)](https://authcore-amarnath-kumar.vercel.app/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev)
 [![Express](https://img.shields.io/badge/Express-5-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://mongoosejs.com)
