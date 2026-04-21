@@ -59,12 +59,26 @@ const TOTP_OPTIONS = {
   epochTolerance: 1,
 };
 
+const isTotpVerificationValid = (result) => {
+  if (typeof result === "boolean") {
+    return result;
+  }
+
+  if (result && typeof result === "object" && "valid" in result) {
+    return result.valid === true;
+  }
+
+  return false;
+};
+
 const verifyTotpCode = (code, secret) => {
-  return verifySync({
+  const verificationResult = verifySync({
     ...TOTP_OPTIONS,
     token: String(code).trim(),
     secret,
   });
+
+  return isTotpVerificationValid(verificationResult);
 };
 
 const normalizeOrigin = (value) => {

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/auth.store";
 
+const digitsOnly = (value, maxLength) =>
+  value.replace(/\D/g, "").slice(0, maxLength);
+
 export function DashboardPage() {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -28,48 +31,68 @@ export function DashboardPage() {
   const handleSendVerification = async () => {
     clearError();
     setMessage("");
-    const response = await resendVerificationOtp();
-    setMessage(response.message || "Verification OTP sent.");
+    try {
+      const response = await resendVerificationOtp();
+      setMessage(response.message || "Verification OTP sent.");
+    } catch {
+      // Store-level error state already contains the API failure message.
+    }
   };
 
   const handleVerify = async (event) => {
     event.preventDefault();
     clearError();
     setMessage("");
-    const response = await verifyCurrentUserOtp(otp);
-    setOtp("");
-    setMessage(response.message || "Account verified successfully.");
+    try {
+      const response = await verifyCurrentUserOtp(otp);
+      setOtp("");
+      setMessage(response.message || "Account verified successfully.");
+    } catch {
+      // Store-level error state already contains the API failure message.
+    }
   };
 
   const handleStartTwoFactorSetup = async () => {
     clearError();
     setTwoFactorMessage("");
-    const response = await setupTwoFactor();
-    setTwoFactorMessage(
-      response.message || "Scan the QR code to continue setup.",
-    );
+    try {
+      const response = await setupTwoFactor();
+      setTwoFactorMessage(
+        response.message || "Scan the QR code to continue setup.",
+      );
+    } catch {
+      // Store-level error state already contains the API failure message.
+    }
   };
 
   const handleEnableTwoFactor = async (event) => {
     event.preventDefault();
     clearError();
     setTwoFactorMessage("");
-    const response = await enableTwoFactor(twoFactorCode);
-    setTwoFactorCode("");
-    setTwoFactorMessage(
-      response.message || "Two-factor authentication enabled.",
-    );
+    try {
+      const response = await enableTwoFactor(twoFactorCode);
+      setTwoFactorCode("");
+      setTwoFactorMessage(
+        response.message || "Two-factor authentication enabled.",
+      );
+    } catch {
+      // Store-level error state already contains the API failure message.
+    }
   };
 
   const handleDisableTwoFactor = async (event) => {
     event.preventDefault();
     clearError();
     setTwoFactorMessage("");
-    const response = await disableTwoFactor(twoFactorCode);
-    setTwoFactorCode("");
-    setTwoFactorMessage(
-      response.message || "Two-factor authentication disabled.",
-    );
+    try {
+      const response = await disableTwoFactor(twoFactorCode);
+      setTwoFactorCode("");
+      setTwoFactorMessage(
+        response.message || "Two-factor authentication disabled.",
+      );
+    } catch {
+      // Store-level error state already contains the API failure message.
+    }
   };
 
   return (
@@ -159,15 +182,19 @@ export function DashboardPage() {
                     className="field"
                     name="otp"
                     value={otp}
-                    onChange={(event) => setOtp(event.target.value)}
+                    onChange={(event) =>
+                      setOtp(digitsOnly(event.target.value, 6))
+                    }
                     placeholder="Enter 6-digit OTP"
+                    maxLength={6}
+                    inputMode="numeric"
                   />
                 </label>
 
                 <button
                   className="btn-primary w-full"
                   type="submit"
-                  disabled={isLoading || otp.trim().length === 0}
+                  disabled={isLoading || otp.trim().length !== 6}
                 >
                   {isLoading ? "Verifying..." : "Mark as verified"}
                 </button>
@@ -253,7 +280,7 @@ export function DashboardPage() {
                         className="field"
                         value={twoFactorCode}
                         onChange={(event) =>
-                          setTwoFactorCode(event.target.value)
+                          setTwoFactorCode(digitsOnly(event.target.value, 8))
                         }
                         placeholder="12345678"
                         maxLength={8}
@@ -283,7 +310,9 @@ export function DashboardPage() {
                 <input
                   className="field"
                   value={twoFactorCode}
-                  onChange={(event) => setTwoFactorCode(event.target.value)}
+                  onChange={(event) =>
+                    setTwoFactorCode(digitsOnly(event.target.value, 8))
+                  }
                   placeholder="12345678"
                   maxLength={8}
                   inputMode="numeric"
