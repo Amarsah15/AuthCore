@@ -39,33 +39,11 @@ const userSchema = new mongoose.Schema(
         type: String,
         index: true,
       },
-      xId: {
-        type: String,
-        index: true,
-      },
-      xUsername: {
-        type: String,
-      },
     },
 
     avatarUrl: {
       type: String,
       trim: true,
-    },
-
-    twoFactorEnabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    twoFactorSecret: {
-      type: String,
-      select: false,
-    },
-
-    twoFactorTempSecret: {
-      type: String,
-      select: false,
     },
 
     sessions: [

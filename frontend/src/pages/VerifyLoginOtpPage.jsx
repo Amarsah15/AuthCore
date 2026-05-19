@@ -31,17 +31,7 @@ export function VerifyLoginOtpPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await verifyLoginOtp(form);
-
-    if (response?.requiresTwoFactor) {
-      navigate("/verify-2fa", {
-        state: {
-          twoFactorToken: response.twoFactorToken,
-          email: form.email,
-        },
-      });
-      return;
-    }
+    await verifyLoginOtp(form);
 
     navigate("/dashboard");
   };

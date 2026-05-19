@@ -32,20 +32,6 @@ const GoogleLogo = () => (
   </svg>
 );
 
-const XLogo = () => (
-  <svg
-    aria-hidden="true"
-    viewBox="0 0 24 24"
-    className="h-4 w-4"
-    focusable="false"
-  >
-    <path
-      fill="currentColor"
-      d="M17.9 3h3.4l-7.5 8.6L22.5 21h-6.8l-5.3-6.9L4.3 21H.9l8.1-9.2L1 3h7l4.8 6.3L17.9 3zm-1.2 16h1.9L7 4.9H5z"
-    />
-  </svg>
-);
-
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -80,17 +66,7 @@ export function LoginPage() {
 
   const handlePasswordLogin = async (event) => {
     event.preventDefault();
-    const response = await loginWithPassword(form);
-
-    if (response?.requiresTwoFactor) {
-      navigate("/verify-2fa", {
-        state: {
-          twoFactorToken: response.twoFactorToken,
-          email: form.email,
-        },
-      });
-      return;
-    }
+    await loginWithPassword(form);
 
     navigate("/dashboard");
   };
@@ -104,11 +80,6 @@ export function LoginPage() {
   const startGoogleLogin = () => {
     const frontendOrigin = encodeURIComponent(window.location.origin);
     window.location.href = `${API_BASE_URL}/auth/oauth/google/start?frontendOrigin=${frontendOrigin}`;
-  };
-
-  const startXLogin = () => {
-    const frontendOrigin = encodeURIComponent(window.location.origin);
-    window.location.href = `${API_BASE_URL}/auth/oauth/x/start?frontendOrigin=${frontendOrigin}`;
   };
 
   return (
@@ -163,7 +134,7 @@ export function LoginPage() {
             Login with OTP
           </button>
         </div>
-        <div className="mt-1 grid gap-3 sm:grid-cols-2">
+        <div className="mt-1">
           <button
             className="btn-secondary w-full"
             type="button"
@@ -172,15 +143,6 @@ export function LoginPage() {
           >
             <GoogleLogo />
             <span className="ml-2">Continue with Google</span>
-          </button>
-          <button
-            className="btn-secondary w-full"
-            type="button"
-            onClick={startXLogin}
-            disabled={isLoading}
-          >
-            <XLogo />
-            <span className="ml-2">Continue with X</span>
           </button>
         </div>
       </form>

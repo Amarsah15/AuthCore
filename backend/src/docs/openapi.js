@@ -149,12 +149,6 @@ export const openApiDocument = {
           },
         },
       },
-      CsrfTokenResponse: {
-        type: "object",
-        properties: {
-          csrfToken: { type: "string" },
-        },
-      },
     },
   },
   paths: {
@@ -168,22 +162,6 @@ export const openApiDocument = {
             content: {
               "text/plain": {
                 schema: { type: "string", example: "Welcome to AuthCore!" },
-              },
-            },
-          },
-        },
-      },
-    },
-    "/api/csrf-token": {
-      get: {
-        tags: ["System"],
-        summary: "Get CSRF token",
-        responses: {
-          200: {
-            description: "CSRF token",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/CsrfTokenResponse" },
               },
             },
           },

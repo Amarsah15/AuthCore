@@ -11,7 +11,6 @@ import { ResetPasswordPage } from "../pages/ResetPasswordPage";
 import { SessionsPage } from "../pages/SessionsPage";
 import { VerifyLoginOtpPage } from "../pages/VerifyLoginOtpPage";
 import { VerifyRegistrationPage } from "../pages/VerifyRegistrationPage";
-import { VerifyTwoFactorPage } from "../pages/VerifyTwoFactorPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
 export function AppRouter() {
@@ -27,7 +26,6 @@ export function AppRouter() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/verify-login" element={<VerifyLoginOtpPage />} />
-          <Route path="/verify-2fa" element={<VerifyTwoFactorPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
         </Route>

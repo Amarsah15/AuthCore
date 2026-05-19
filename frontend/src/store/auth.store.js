@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { api, ensureCsrfToken } from "../lib/api";
+import { api } from "../lib/api";
 
 const getErrorMessage = (error, fallback) => {
   return error.response?.data?.message || fallback;
@@ -9,8 +9,6 @@ export const useAuthStore = create((set, get) => ({
   user: null,
   sessions: [],
   accessToken: null,
-  twoFactorSetup: null,
-  csrfReady: false,
   isAuthenticated: false,
   isBootstrapping: true,
   isLoading: false,
@@ -23,17 +21,14 @@ export const useAuthStore = create((set, get) => ({
     set({ isBootstrapping: true, error: null });
 
     try {
-      await ensureCsrfToken();
       const response = await api.get("/auth/me");
 
       set({
-        csrfReady: true,
         user: response.data.data,
         isAuthenticated: true,
       });
     } catch {
       set({
-        csrfReady: true,
         user: null,
         isAuthenticated: false,
         accessToken: null,
@@ -134,16 +129,6 @@ export const useAuthStore = create((set, get) => ({
     try {
       const response = await api.post("/auth/login", payload);
 
-      if (response.data?.requiresTwoFactor) {
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-        });
-
-        return response.data;
-      }
-
       const me = await api.get("/auth/me");
 
       set({
@@ -183,16 +168,6 @@ export const useAuthStore = create((set, get) => ({
     try {
       const response = await api.post("/auth/verify-login", payload);
 
-      if (response.data?.requiresTwoFactor) {
-        set({
-          user: null,
-          accessToken: null,
-          isAuthenticated: false,
-        });
-
-        return response.data;
-      }
-
       const me = await api.get("/auth/me");
 
       set({
@@ -204,82 +179,6 @@ export const useAuthStore = create((set, get) => ({
       return response.data;
     } catch (error) {
       const message = getErrorMessage(error, "Login verification failed");
-      set({ error: message });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  verifyTwoFactorLogin: async (payload) => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const response = await api.post("/auth/2fa/verify", payload);
-      const me = await api.get("/auth/me");
-
-      set({
-        accessToken: response.data.accessToken,
-        user: me.data.data,
-        isAuthenticated: true,
-      });
-
-      return response.data;
-    } catch (error) {
-      const message = getErrorMessage(error, "Two-factor verification failed");
-      set({ error: message });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  setupTwoFactor: async () => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const response = await api.post("/auth/2fa/setup");
-      set({ twoFactorSetup: response.data.data || null });
-      return response.data;
-    } catch (error) {
-      const message = getErrorMessage(error, "Unable to start 2FA setup");
-      set({ error: message });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  enableTwoFactor: async (code) => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const response = await api.post("/auth/2fa/enable", { code });
-      const me = await api.get("/auth/me");
-      set({
-        user: me.data.data,
-        twoFactorSetup: null,
-      });
-      return response.data;
-    } catch (error) {
-      const message = getErrorMessage(error, "Unable to enable 2FA");
-      set({ error: message });
-      throw error;
-    } finally {
-      set({ isLoading: false });
-    }
-  },
-
-  disableTwoFactor: async (code) => {
-    set({ isLoading: true, error: null });
-
-    try {
-      const response = await api.post("/auth/2fa/disable", { code });
-      const me = await api.get("/auth/me");
-      set({ user: me.data.data });
-      return response.data;
-    } catch (error) {
-      const message = getErrorMessage(error, "Unable to disable 2FA");
       set({ error: message });
       throw error;
     } finally {
@@ -344,7 +243,6 @@ export const useAuthStore = create((set, get) => ({
         user: null,
         sessions: [],
         accessToken: null,
-        twoFactorSetup: null,
         isAuthenticated: false,
         isLoading: false,
       });
@@ -364,7 +262,6 @@ export const useAuthStore = create((set, get) => ({
         user: null,
         sessions: [],
         accessToken: null,
-        twoFactorSetup: null,
         isAuthenticated: false,
         isLoading: false,
       });

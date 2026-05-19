@@ -23,11 +23,9 @@
 | -------------------------- | ------------------------------------------------------ |
 | **Email OTP Verification** | Register with email confirmation via one-time passcode |
 | **Password & OTP Login**   | Flexible login methods for every user                  |
-| **Two-Factor Auth (TOTP)** | 8-digit TOTP with QR code setup via authenticator apps |
 | **Password Reset Flow**    | OTP-based recovery with secure token handling          |
 | **Session Management**     | View, identify, and revoke active device sessions      |
 | **Google OAuth**           | Sign in or sign up with Google                         |
-| **CSRF Protection**        | CSRF-aware API requests with secure cookies            |
 | **Audit Logging**          | Track auth events across accounts                      |
 | **Rate Limiting**          | Built-in abuse prevention on auth routes               |
 | **OpenAPI / Swagger Docs** | Interactive API documentation out of the box           |
@@ -38,7 +36,7 @@
 
 **[https://authcore-amarnath-kumar.vercel.app/](https://authcore-amarnath-kumar.vercel.app/)**
 
-> Try the full flow: register → verify email OTP → login → manage sessions → enable 2FA
+> Try the full flow: register → verify email OTP → login → manage sessions
 
 ---
 
@@ -61,17 +59,6 @@
 - Standard password login
 - OTP-based passwordless login
 - Google OAuth (sign in or sign up)
-- 2FA challenge when TOTP is enabled
-
-</details>
-
-<details>
-<summary><strong>Two-Factor Authentication</strong></summary>
-
-1. Initiate 2FA setup from the dashboard
-2. Scan the QR code in any authenticator app (Google Authenticator, Authy, etc.)
-3. Confirm with the 8-digit TOTP code to activate
-4. Future logins will prompt for the TOTP challenge
 
 </details>
 
@@ -106,7 +93,7 @@
 | [Vite](https://vitejs.dev)                 | Build tool                    |
 | [React Router](https://reactrouter.com)    | Client-side routing           |
 | [Zustand](https://zustand-demo.pmnd.rs)    | Auth state management         |
-| [Axios](https://axios-http.com)            | HTTP client with CSRF support |
+| [Axios](https://axios-http.com)            | HTTP client                   |
 | [Tailwind CSS v4](https://tailwindcss.com) | Utility-first styling         |
 
 ### Backend
@@ -117,8 +104,8 @@
 | [MongoDB + Mongoose](https://mongoosejs.com)                                                 | Database & ODM            |
 | [JWT](https://jwt.io)                                                                        | Stateless auth tokens     |
 | [Nodemailer](https://nodemailer.com)                                                         | Transactional email (OTP) |
-| [Otplib](https://github.com/yeojz/otplib) + [QRCode](https://github.com/soldair/node-qrcode) | TOTP 2FA                  |
-| [csurf](https://github.com/expressjs/csurf)                                                  | CSRF protection           |
+| [Zod](https://zod.dev)                                                                       | Request validation        |
+| [Helmet](https://helmetjs.github.io)                                                         | HTTP security headers     |
 | [express-rate-limit](https://github.com/express-rate-limit/express-rate-limit)               | Rate limiting             |
 
 ---
@@ -137,7 +124,13 @@ AuthCore/
 |       |-- config/
 |       |   `-- db.js
 |       |-- controllers/
-|       |   `-- auth.controller.js
+|       |   |-- auth.shared.js
+|       |   |-- login.controller.js
+|       |   |-- oauth.controller.js
+|       |   |-- password.controller.js
+|       |   |-- registration.controller.js
+|       |   |-- session.controller.js
+|       |   `-- user.controller.js
 |       |-- docs/
 |       |   `-- openapi.js
 |       |-- middleware/
@@ -149,7 +142,13 @@ AuthCore/
 |       |   |-- otp.model.js
 |       |   `-- user.model.js
 |       |-- routes/
-|       |   `-- auth.routes.js
+|       |   |-- admin.routes.js
+|       |   |-- login.routes.js
+|       |   |-- oauth.routes.js
+|       |   |-- password.routes.js
+|       |   |-- registration.routes.js
+|       |   |-- session.routes.js
+|       |   `-- user.routes.js
 |       `-- utils/
 |           |-- appError.js
 |           |-- asyncHandler.js
@@ -188,8 +187,7 @@ AuthCore/
 |       |   |-- ResetPasswordPage.jsx
 |       |   |-- SessionsPage.jsx
 |       |   |-- VerifyLoginOtpPage.jsx
-|       |   |-- VerifyRegistrationPage.jsx
-|       |   `-- VerifyTwoFactorPage.jsx
+|       |   `-- VerifyRegistrationPage.jsx
 |       |-- routes/
 |       |   `-- AppRouter.jsx
 |       `-- store/
@@ -214,14 +212,7 @@ AuthCore/
 
 - Login with password
 - Or request a login OTP and verify it
-- Or continue with Google / X OAuth
-
-### Two-Factor Authentication
-
-- Start 2FA setup from dashboard
-- Scan QR in an authenticator app
-- Verify with 8-digit code to enable
-- Use 2FA challenge during login when enabled
+- Or continue with Google OAuth
 
 ### Recovery
 
@@ -314,7 +305,6 @@ Once the backend is running:
 | `http://localhost:5000/api/v1/auth`    | Auth base URL |
 | `http://localhost:5000/api-docs`       | Swagger UI    |
 | `http://localhost:5000/api-docs.json`  | OpenAPI JSON  |
-| `http://localhost:5000/api/csrf-token` | CSRF token    |
 
 ---
 
@@ -330,7 +320,6 @@ Once the backend is running:
 7. Open the Sessions page
 8. Revoke a session
 9. Test the forgot-password flow
-10. Enable 2FA from the dashboard
 ```
 
 ---

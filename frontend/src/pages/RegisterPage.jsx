@@ -32,20 +32,6 @@ const GoogleLogo = () => (
   </svg>
 );
 
-const XLogo = () => (
-  <svg
-    aria-hidden="true"
-    viewBox="0 0 24 24"
-    className="h-4 w-4"
-    focusable="false"
-  >
-    <path
-      fill="currentColor"
-      d="M17.9 3h3.4l-7.5 8.6L22.5 21h-6.8l-5.3-6.9L4.3 21H.9l8.1-9.2L1 3h7l4.8 6.3L17.9 3zm-1.2 16h1.9L7 4.9H5z"
-    />
-  </svg>
-);
-
 export function RegisterPage() {
   const navigate = useNavigate();
   const register = useAuthStore((state) => state.register);
@@ -81,11 +67,6 @@ export function RegisterPage() {
   const startGoogleRegister = () => {
     const frontendOrigin = encodeURIComponent(window.location.origin);
     window.location.href = `${API_BASE_URL}/auth/oauth/google/start?frontendOrigin=${frontendOrigin}`;
-  };
-
-  const startXRegister = () => {
-    const frontendOrigin = encodeURIComponent(window.location.origin);
-    window.location.href = `${API_BASE_URL}/auth/oauth/x/start?frontendOrigin=${frontendOrigin}`;
   };
 
   return (
@@ -135,7 +116,7 @@ export function RegisterPage() {
         >
           {isLoading ? "Creating account..." : "Create account"}
         </button>
-        <div className="mt-1 grid gap-3 sm:grid-cols-2">
+        <div className="mt-1">
           <button
             className="btn-secondary w-full"
             type="button"
@@ -144,15 +125,6 @@ export function RegisterPage() {
           >
             <GoogleLogo />
             <span className="ml-2">Sign up with Google</span>
-          </button>
-          <button
-            className="btn-secondary w-full"
-            type="button"
-            onClick={startXRegister}
-            disabled={isLoading}
-          >
-            <XLogo />
-            <span className="ml-2">Sign up with X</span>
           </button>
         </div>
       </form>

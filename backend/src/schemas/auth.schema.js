@@ -13,10 +13,6 @@ const otp = z
   .string()
   .trim()
   .regex(/^\d{6}$/, "OTP must be a 6-digit code");
-const twoFactorCode = z
-  .string()
-  .trim()
-  .regex(/^\d{8}$/, "2FA code must be an 8-digit code");
 
 export const registerSchema = z.object({
   name: z
@@ -62,13 +58,4 @@ export const resetPasswordSchema = z.object({
 
 export const logoutSessionSchema = z.object({
   sessionId: z.string().trim().min(1, "Session id is required"),
-});
-
-export const verifyTwoFactorSchema = z.object({
-  twoFactorToken: z.string().trim().min(1, "2FA token is required"),
-  code: twoFactorCode,
-});
-
-export const twoFactorCodeSchema = z.object({
-  code: twoFactorCode,
 });
