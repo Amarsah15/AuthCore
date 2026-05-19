@@ -7,7 +7,7 @@ import { openApiDocument, swaggerHtml } from "./docs/openapi.js";
 import { generalLimiter } from "./middleware/rateLimit.middleware.js";
 
 const app = express();
-const allowedOrigins = ["http://localhost:5173", process.env.FRONTEND_URL];
+const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:5173"];
 
 app.use(
   helmet({
